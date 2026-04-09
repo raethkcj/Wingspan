@@ -23,6 +23,19 @@ function reloadXml()
 	initializeScoresheet()
 end
 
+local xmlNeedsUpdate = false
+
+Wait.time(
+	function()
+		if xmlNeedsUpdate then
+			xmlNeedsUpdate = false
+			UI.setXmlTable(scoresheetXml)
+		end
+	end,
+	1,
+	-1
+)
+
 function onPlayerChangeColor()
 	initializeScoresheet()
 end
@@ -45,7 +58,7 @@ function initializeScoresheet()
 			end
 		end
 	end
-	UI.setXmlTable(scoresheetXml)
+	xmlNeedsUpdate = true
 end
 
 function initializeName(cell, player)
@@ -149,7 +162,7 @@ function newOnPointsInput(player, label)
 			end
 		end
 		setTotalPoints(player.color)
-		UI.setXmlTable(scoresheetXml)
+		xmlNeedsUpdate = true
 	end
 	nextInputID = nextInputID + 1
 	return id
@@ -172,7 +185,7 @@ function setGoalPoints(goalPoints)
 		setCellPoints("goals", playerColor, points)
 		setTotalPoints(playerColor)
 	end
-	UI.setXmlTable(scoresheetXml)
+	xmlNeedsUpdate = true
 end
 
 function setEggPoints(params)
@@ -182,7 +195,7 @@ function setEggPoints(params)
 		rowPoints["eggs"] = points
 		setCellPoints("eggs", playerColor, points)
 		setTotalPoints(playerColor)
-		UI.setXmlTable(scoresheetXml)
+		xmlNeedsUpdate = true
 	end
 end
 
@@ -193,7 +206,7 @@ function setFoodPoints(params)
 		rowPoints["food"] = points
 		setCellPoints("food", playerColor, points)
 		setTotalPoints(playerColor)
-		UI.setXmlTable(scoresheetXml)
+		xmlNeedsUpdate = true
 	end
 end
 
@@ -204,7 +217,7 @@ function setTuckedPoints(params)
 		rowPoints["tucked"] = points
 		setCellPoints("tucked", playerColor, points)
 		setTotalPoints(playerColor)
-		UI.setXmlTable(scoresheetXml)
+		xmlNeedsUpdate = true
 	end
 end
 
