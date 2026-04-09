@@ -1,0 +1,155 @@
+<!-- Xml UI. See documentation: https://api.tabletopsimulator.com/ui/introUI/ -->
+<Defaults>
+	<Text fontSize="60" />
+	<InputField
+		characterValidation="Integer"
+		fontSize="60"
+		characterLimit="3"
+		color="clear"
+		placeholder="0"
+	/>
+</Defaults>
+<Panel width="2295" height="2270" position="405 80 -12" padding="0">
+	<TableLayout id="scoresheet" cellBackgroundColor="clear">
+		<Defaults>
+			<Cell dontUseTableCellBackground="true"/>
+		</Defaults>
+		<Row id="names">
+			<Cell><Text color="White" outline="Black" outlineSize="2"></Text></Cell>
+			<Cell><Text color="White" outline="Black" outlineSize="2"></Text></Cell>
+			<Cell><Text color="White" outline="Black" outlineSize="2"></Text></Cell>
+			<Cell><Text color="White" outline="Black" outlineSize="2"></Text></Cell>
+			<Cell><Text color="White" outline="Black" outlineSize="2"></Text></Cell>
+			<Cell><Text color="White" outline="Black" outlineSize="2"></Text></Cell>
+			<Cell><Text color="White" outline="Black" outlineSize="2"></Text></Cell>
+		</Row>
+		<Defaults>
+			<Cell dontUseTableCellBackground="false"/>
+			<InputField onEndEdit="onPointsInput"/>
+		</Defaults>
+		<Row id="birds">
+			<Cell><InputField></InputField></Cell>
+			<Cell><InputField></InputField></Cell>
+			<Cell><InputField></InputField></Cell>
+			<Cell><InputField></InputField></Cell>
+			<Cell><InputField></InputField></Cell>
+			<Cell><InputField></InputField></Cell>
+			<Cell><InputField></InputField></Cell>
+		</Row>
+		<Row id="bonuses">
+			<Cell><InputField></InputField></Cell>
+			<Cell><InputField></InputField></Cell>
+			<Cell><InputField></InputField></Cell>
+			<Cell><InputField></InputField></Cell>
+			<Cell><InputField></InputField></Cell>
+			<Cell><InputField></InputField></Cell>
+			<Cell><InputField></InputField></Cell>
+		</Row>
+		<Row id="goals">
+			<Cell><Text></Text></Cell>
+			<Cell><Text></Text></Cell>
+			<Cell><Text></Text></Cell>
+			<Cell><Text></Text></Cell>
+			<Cell><Text></Text></Cell>
+			<Cell><Text></Text></Cell>
+			<Cell><Text></Text></Cell>
+		</Row>
+		<Row id="eggs">
+			<Cell><Text></Text></Cell>
+			<Cell><Text></Text></Cell>
+			<Cell><Text></Text></Cell>
+			<Cell><Text></Text></Cell>
+			<Cell><Text></Text></Cell>
+			<Cell><Text></Text></Cell>
+			<Cell><Text></Text></Cell>
+		</Row>
+		<Row id="food">
+			<Cell><Text></Text></Cell>
+			<Cell><Text></Text></Cell>
+			<Cell><Text></Text></Cell>
+			<Cell><Text></Text></Cell>
+			<Cell><Text></Text></Cell>
+			<Cell><Text></Text></Cell>
+			<Cell><Text></Text></Cell>
+		</Row>
+		<Row id="tucked">
+			<Cell><Text></Text></Cell>
+			<Cell><Text></Text></Cell>
+			<Cell><Text></Text></Cell>
+			<Cell><Text></Text></Cell>
+			<Cell><Text></Text></Cell>
+			<Cell><Text></Text></Cell>
+			<Cell><Text></Text></Cell>
+		</Row>
+		<Row id="duet">
+			<Cell><Text></Text></Cell>
+			<Cell><Text></Text></Cell>
+			<Cell><Text></Text></Cell>
+			<Cell><Text></Text></Cell>
+			<Cell><Text></Text></Cell>
+			<Cell><Text></Text></Cell>
+			<Cell><Text></Text></Cell>
+		</Row>
+		<Defaults>
+			<InputField ignoreLayout="true" width="33%" height="100%"/>
+		</Defaults>
+		<Row id="nectar">
+			<Cell>
+				<InputField offsetXY="-100 -100" habitat="forest"/>
+				<InputField offsetXY="0 -100" habitat="grassland"/>
+				<InputField offsetXY="100 -100" habitat="wetland"/>
+			</Cell>
+			<Cell>
+				<InputField offsetXY="-100 -100" habitat="forest"/>
+				<InputField offsetXY="0 -100" habitat="grassland"/>
+				<InputField offsetXY="100 -100" habitat="wetland"/>
+			</Cell>
+			<Cell>
+				<InputField offsetXY="-100 -100" habitat="forest"/>
+				<InputField offsetXY="0 -100" habitat="grassland"/>
+				<InputField offsetXY="100 -100" habitat="wetland"/>
+			</Cell>
+			<Cell>
+				<InputField offsetXY="-100 -100" habitat="forest"/>
+				<InputField offsetXY="0 -100" habitat="grassland"/>
+				<InputField offsetXY="100 -100" habitat="wetland"/>
+			</Cell>
+			<Cell>
+				<InputField offsetXY="-100 -100" habitat="forest"/>
+				<InputField offsetXY="0 -100" habitat="grassland"/>
+				<InputField offsetXY="100 -100" habitat="wetland"/>
+			</Cell>
+			<Cell>
+				<InputField offsetXY="-100 -100" habitat="forest"/>
+				<InputField offsetXY="0 -100" habitat="grassland"/>
+				<InputField offsetXY="100 -100" habitat="wetland"/>
+			</Cell>
+			<Cell>
+				<InputField offsetXY="-100 -100" habitat="forest"/>
+				<InputField offsetXY="0 -100" habitat="grassland"/>
+				<InputField offsetXY="100 -100" habitat="wetland"/>
+			</Cell>
+		</Row>
+		<Row id="hbird">
+			<Cell><Text></Text></Cell>
+			<Cell><Text></Text></Cell>
+			<Cell><Text></Text></Cell>
+			<Cell><Text></Text></Cell>
+			<Cell><Text></Text></Cell>
+			<Cell><Text></Text></Cell>
+			<Cell><Text></Text></Cell>
+		</Row>
+		<Defaults>
+			<Text ignoreLayout="true" offsetXY="0 -75"/>
+		</Defaults>
+		<Row id="total" preferredHeight="270">
+			<Cell><Text></Text></Cell>
+			<Cell><Text></Text></Cell>
+			<Cell><Text></Text></Cell>
+			<Cell><Text></Text></Cell>
+			<Cell><Text></Text></Cell>
+			<Cell><Text></Text></Cell>
+			<Cell><Text></Text></Cell>
+		</Row>
+	</TableLayout>
+</Panel>

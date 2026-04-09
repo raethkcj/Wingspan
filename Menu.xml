@@ -1,0 +1,54 @@
+<!-- Xml UI. See documentation: https://api.tabletopsimulator.com/ui/introUI/ -->
+<Defaults>
+	<Text fontSize="60" />
+	<ToggleButton
+		selectedBackgroundColor="#5fafff"
+		deselectedBackgroundColor="#afd7ff"
+		colors="white|#5f87d7|#5f87d7|white|white"
+		fontSize="50"
+		tooltipFontSize="50"
+		tooltipPosition="Below"
+		tooltipOffset="100"
+	/>
+	<HorizontalLayout spacing="50"/>
+</Defaults>
+<Panel width="1500" height="1000" position="0 0 -11" color="grey" padding="50">
+	<VerticalLayout>
+		<Text>Expansions (choose any number)</Text>
+		<HorizontalLayout>
+			<ToggleButton
+				id="ee"
+				onValueChanged="onExpansionToggle"
+				selectedBackgroundColor="#875fff"
+				deselectedBackgroundColor="#eee8ff"
+				colors="white|#6a38ff|#6a38ff|white|white">Europe</ToggleButton>
+			<ToggleButton
+				id="oe"
+				onValueChanged="onExpansionToggle"
+				selectedBackgroundColor="#ffd700"
+				deselectedBackgroundColor="#fff9d8"
+				colors="white|#c4a500|#c4a500|white|white">Oceania</ToggleButton>
+			<ToggleButton
+				id="as"
+				onValueChanged="onExpansionToggle"
+				selectedBackgroundColor="#b92e2e"
+				deselectedBackgroundColor="#efbdbd"
+				colors="white|#9a2626|#9a2626|white|white">Asia</ToggleButton>
+			<ToggleButton
+				id="am"
+				onValueChanged="onExpansionToggle"
+				selectedBackgroundColor="#9bff38"
+				deselectedBackgroundColor="#eaffd5"
+				colors="white|#61c100|#61c100|white|white">Americas</ToggleButton>
+		</HorizontalLayout>
+		<Text>Modes (choose one)</Text>
+		<ToggleGroup onValueChanged="onModeChanged">
+			<HorizontalLayout>
+				<ToggleButton tooltip="6-7 players">Flock</ToggleButton>
+				<ToggleButton tooltip="2-4 players" isOn="true">Standard</ToggleButton>
+				<ToggleButton tooltip="2 players">Duet</ToggleButton>
+				<ToggleButton tooltip="1 player">Automa</ToggleButton>
+			</HorizontalLayout>
+		</ToggleGroup>
+	</VerticalLayout>
+</Panel>
