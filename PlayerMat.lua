@@ -12,12 +12,23 @@ function onLoad()
 	playerMatZones[getObjectFromGUID("e902d0")] = "Pink"
 end
 
-function onObjectEnterZone(zone, _object)
-	updateZone(zone)
+function onObjectEnterZone(zone, object)
+	waitUntilRestingOrDestroyed(zone, object)
 end
 
-function onObjectLeaveZone(zone, _object)
-	updateZone(zone)
+function onObjectLeaveZone(zone, object)
+	waitUntilRestingOrDestroyed(zone, object)
+end
+
+function waitUntilRestingOrDestroyed(zone, object)
+	Wait.condition(
+		function()
+			updateZone(zone)
+		end,
+		function()
+			return object.isDestroyed() or object.resting
+		end
+	)
 end
 
 function updateZone(zone)
@@ -32,14 +43,17 @@ function updateZone(zone)
 	for _, object in ipairs(objects) do
 		for _, tag in ipairs(object.getTags()) do
 			if tag == "egg" then
-				eggs = eggs + 1
+				local count = math.max(object.getQuantity(), 1)
+				eggs = eggs + count
 				break
 			elseif tag == "food" then
-				food = food + 1
+				local count = math.max(object.getQuantity(), 1)
+				food = food + count
 				break
 			elseif tag == "bird" then
 				if object.is_face_down then
-					tucked = tucked + 1
+					local count = math.max(object.getQuantity(), 1)
+					tucked = tucked + count
 				end
 			end
 		end
