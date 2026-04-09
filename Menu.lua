@@ -6,6 +6,15 @@ local expansionBags = {
 	am   = getObjectFromGUID("35528a"),
 }
 
+local foodBags = {
+	invertebrate = getObjectFromGUID("06fe2c"),
+	seed         = getObjectFromGUID("8bac58"),
+	fruit        = getObjectFromGUID("c5a428"),
+	fish         = getObjectFromGUID("6a29be"),
+	rodent       = getObjectFromGUID("676cc2"),
+	nectar       = getObjectFromGUID("407db6"),
+}
+
 local enabledExpansions = {
 	Core = true,
 }
@@ -268,5 +277,80 @@ function setFlockComponentState(mode)
 		position[2] = mode == Mode.Flock and shownHeight or hiddenHeight
 		component.setPosition(position)
 		component.interactable = mode == Mode.Flock
+	end
+end
+
+function startGame()
+	local xml = self.UI.getXmlTable()
+	disableInputs(xml)
+	self.UI.setXmlTable(xml)
+	birdDeck.shuffle()
+	bonusDeck.shuffle()
+	-- TODO Cut decks if Flock Mode
+	birdDeck.deal(5)
+	foodBags.invertebrate.deal(1)
+	foodBags.seed.deal(1)
+	foodBags.fruit.deal(1)
+	foodBags.fish.deal(1)
+	foodBags.rodent.deal(1)
+	bonusDeck.deal(2)
+	chooseInHand("start", 6, 6, "Choose a mix of 5 birds and food to discard. Also choose 1 bonus to discard.")
+end
+
+function disableInputs(parent)
+	for _, element in ipairs(parent) do
+		if element.tag == "Button" or element.tag == "ToggleButton" then
+			element.attributes.interactable = "false"
+		elseif element.children then
+			disableInputs(element.children)
+		end
+	end
+end
+
+function onPlayerHandChoice(playerColor, label, objects)
+	local valid, info = validateChoice(objects)
+	if valid then
+		discardChoice(objects)
+		-- TODO dump food on tray
+	else
+		Player[playerColor].showInfoDialog(info)
+		chooseInHand("start", 6, 6, "Choose a mix of 5 birds and food to discard. Also choose 1 bonus to discard.", { playerColor })
+	end
+end
+
+function validateChoice(objects)
+	local birds = 0
+	local food = 0
+	local bonuses = 0
+	for _, object in ipairs(objects) do
+		for _, tag in ipairs(object.getTags()) do
+			if tag == "bird" then
+				birds = birds + 1
+			elseif tag == "bonus" then
+				bonuses = bonuses + 1
+			elseif tag == "food" then
+				food = food + 1
+			end
+		end
+	end
+
+	if birds + food == 5 and bonuses == 1 then
+		return true
+	else
+		return false, string.format("You chose %d birds, %d food, and %d bonuses. Please choose carefully!", birds, food, bonuses)
+	end
+end
+
+function discardChoice(objects)
+	for _, object in ipairs(objects) do
+		for _, tag in ipairs(object.getTags()) do
+			if tag == "bird" then
+				birdDeck.putObject(object) -- TODO Should be discard pile
+			elseif tag == "bonus" then
+				bonusDeck.putObject(object) -- TODO Should be discard pile
+			else
+				object.destruct()
+			end
+		end
 	end
 end

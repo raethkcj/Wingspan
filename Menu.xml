@@ -1,6 +1,7 @@
 <!-- Xml UI. See documentation: https://api.tabletopsimulator.com/ui/introUI/ -->
 <Defaults>
 	<Text fontSize="60" />
+	<Button fontSize="60" />
 	<ToggleButton
 		selectedBackgroundColor="#5fafff"
 		deselectedBackgroundColor="#afd7ff"
@@ -50,5 +51,9 @@
 				<ToggleButton tooltip="1 player">Automa</ToggleButton>
 			</HorizontalLayout>
 		</ToggleGroup>
+		<Text/>
+		<HorizontalLayout padding="400 400 0 0">
+			<Button onClick="startGame">Start</Button>
+		</HorizontalLayout>
 	</VerticalLayout>
 </Panel>
