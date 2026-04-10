@@ -53,6 +53,16 @@ local playerMats = {
 	Pink   = getObjectFromGUID("86b0b0"),
 }
 
+local playerTrays = {
+	White  = getObjectFromGUID("d57317"),
+	Green  = getObjectFromGUID("ace029"),
+	Blue   = getObjectFromGUID("4ab953"),
+	Orange = getObjectFromGUID("5e6632"),
+	Red    = getObjectFromGUID("72bafc"),
+	Yellow = getObjectFromGUID("944536"),
+	Pink   = getObjectFromGUID("69c15e"),
+}
+
 function onExpansionToggle(_player, value, expansion)
 	if value == "True" then
 		enableExpansion(expansion)
@@ -311,7 +321,7 @@ function onPlayerHandChoice(playerColor, label, objects)
 	local valid, info = validateChoice(objects)
 	if valid then
 		discardChoice(objects)
-		-- TODO dump food on tray
+		dumpFoodOnTray(playerColor)
 	else
 		Player[playerColor].showInfoDialog(info)
 		chooseInHand("start", 6, 6, "Choose a mix of 5 birds and food to discard. Also choose 1 bonus to discard.", { playerColor })
@@ -351,6 +361,24 @@ function discardChoice(objects)
 			else
 				object.destruct()
 			end
+		end
+	end
+end
+
+function dumpFoodOnTray(playerColor)
+	local hand = Player[playerColor].getHandObjects()
+	local position = playerTrays[playerColor].getPosition()
+	local i = 0
+	for _, object in ipairs(hand) do
+		if object.hasTag("food") then
+			object.use_hands = false
+			position[2] = 3 + i
+			object.setPosition(position)
+			-- Random float in range [2, 4] multiplied by random sign 1 or -1
+			local x = (math.random() * 2 + 2) * (math.random(2) * 2 - 3)
+			local z = (math.random() * 2 + 2) * (math.random(2) * 2 - 3)
+			object.setVelocity({ x, 0, z })
+			i = i + 1
 		end
 	end
 end
