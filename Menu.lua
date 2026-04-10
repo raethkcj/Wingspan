@@ -14,6 +14,7 @@ local foodBags = {
 	rodent       = getObjectFromGUID("676cc2"),
 	nectar       = getObjectFromGUID("407db6"),
 }
+foodBags.nectar.interactable = false
 
 local enabledExpansions = {
 	Core = true,
@@ -34,6 +35,8 @@ local goalDeck = getObjectFromGUID("dc9bc7")
 local decks = { birdDeck, bonusDeck, goalDeck }
 
 local cardRot = { 0, 0, 180 }
+
+local nectarBagPos = { 7.43, 0.94, 6.96 }
 
 local hbirdDeck = "295346"
 local hbirdDeckPos = { -5.33, 1.17, 1.44 }
@@ -107,20 +110,22 @@ function enableExpansion(expansion)
 			if expansion == "am" and tag == "hummingbird" then
 				spawnContainerObject(bag, object.guid, hbirdDeckPos)
 			end
-
-			if expansion == "am" and object.guid == hbirdGarden then
-				spawnContainerObject(bag, hbirdGarden, hbirdGardenPos)
-			end
+		end
+		if expansion == "am" and object.guid == hbirdGarden then
+			spawnContainerObject(bag, hbirdGarden, hbirdGardenPos)
 		end
 	end
 
+	if expansion == "oe" or expansion == "am" then
+		foodBags.nectar.setPosition(nectarBagPos)
+		foodBags.nectar.interactable = true
+	end
 	if expansion == "am" then
 		cloneHummingbirdTracks()
 	end
 
 	-- TODO:
 	-- Deal Nectar if Oceania
-	-- Hide/show nectar bag
 end
 
 function disableExpansion(expansion)
@@ -137,6 +142,10 @@ function disableExpansion(expansion)
 		end
 	end
 
+	if not (enabledExpansions["oe"] or enabledExpansions["am"]) then
+		foodBags.nectar.setPosition({ 0, -5, 0 })
+		foodBags.nectar.interactable = false
+	end
 	if expansion == "am" then
 		bag.putObject(getObjectFromGUID(hbirdDeck), 1)
 		bag.putObject(getObjectFromGUID(hbirdGarden), 1)
@@ -178,12 +187,23 @@ function moveContainerObject(oldContainer, guid, newContainer)
 	})
 end
 
+local unlockedObjects = {
+	Card = true,
+	Deck = true,
+	Token = true,
+}
+
 function spawnContainerObject(container, guid, position)
 	container.takeObject({
 		guid = guid,
 		position = position,
 		rotation = cardRot,
 		smooth = false,
+		callback_function = function(object)
+			if not unlockedObjects[object.type] then
+				object.locked = true
+			end
+		end,
 	})
 end
 
