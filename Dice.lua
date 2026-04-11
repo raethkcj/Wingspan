@@ -51,8 +51,11 @@ function moveToTray(object)
 		function()
 			object.locked = false
 			Wait.frames(function()
-				-- Need to wait 1 frame between unlock and setVelocity
-				Menu.call("dumpObjectOnTrayPacked", { object, playerColor })
+				if not object.isDestroyed() then
+					-- Need to wait 1 frame between unlock and setVelocity
+					Menu.call("dumpObjectOnTrayPacked", { object, playerColor })
+					Global.call("removeFilteredContainerObject", object)
+				end
 			end)
 		end,
 		function()
@@ -80,11 +83,12 @@ function dealFood(playerColor, food)
 	local bag = foodBags[food]
 	local position = bag.getPosition()
 	position[2] = position[2] + 3
-	bag.takeObject({
+	local object = bag.takeObject({
 		index = 1,
 		position = position,
 		callback_function = moveToDice
 	})
+	Global.call("setFilteredContainerObject", object)
 end
 
 function chooseFood()

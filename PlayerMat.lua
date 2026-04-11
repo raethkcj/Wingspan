@@ -63,3 +63,17 @@ function updateZone(zone)
 	Scoresheet.call("setFoodPoints", { playerColor, food })
 	Scoresheet.call("setTuckedPoints", { playerColor, tucked })
 end
+
+local containerFilter = {}
+
+function setFilteredContainerObject(object)
+	containerFilter[object] = true
+end
+
+function removeFilteredContainerObject(object)
+	containerFilter[object] = nil
+end
+
+function tryObjectEnterContainer(_container, object)
+	return not containerFilter[object]
+end
