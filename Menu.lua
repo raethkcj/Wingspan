@@ -465,14 +465,23 @@ function onObjectEnterContainer(container, object)
 	end
 end
 
-function dumpObjectOnTray(object, playerColor, verticalOffset)
+local offset = 0
+
+function dumpObjectOnTray(object, playerColor)
 	object.use_hands = false
 	local position = playerTrays[playerColor].getPosition()
-	position[2] = 3 + (verticalOffset or 0)
+	position[2] = 3 + offset
+	offset = (offset + 1) % 5
 	object.setPosition(position)
-	-- Random float in range [2, 4] multiplied by random sign 1 or -1
-	local x = (math.random() * 2 + 2) * (math.random(2) * 2 - 3)
-	local z = (math.random() * 2 + 2) * (math.random(2) * 2 - 3)
+	-- Random position on a donut with radii in [2,4]
+	local minRadius = 2
+	local maxRadius = 5
+	local x = maxRadius * (2 * math.random() - 1)
+	local x2 = x ^ 2
+	local minRadius2 = minRadius ^ 2
+	local min = x2 < minRadius2 and math.sqrt(minRadius2 - x2) or 0
+	local max = math.sqrt(maxRadius ^ 2 - x2)
+	local z = (math.random(2) * 2 - 3) * (math.random() * (max - min) + min)
 	object.setVelocity({ x, 0, z })
 end
 
@@ -483,11 +492,9 @@ end
 
 function dumpFoodOnTray(playerColor)
 	local hand = Player[playerColor].getHandObjects()
-	local i = 0
 	for _, object in ipairs(hand) do
 		if object.hasTag("food") then
-			dumpObjectOnTray(object, playerColor, i)
-			i = i + 1
+			dumpObjectOnTray(object, playerColor)
 		end
 	end
 end
