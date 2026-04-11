@@ -473,15 +473,13 @@ function dumpObjectOnTray(object, playerColor)
 	position[2] = 3 + offset
 	offset = (offset + 1) % 5
 	object.setPosition(position)
-	-- Random position on a donut with radii in [2,4]
+	-- Random position on a donut with radii in [min, max]
 	local minRadius = 2
 	local maxRadius = 5
-	local x = maxRadius * (2 * math.random() - 1)
-	local x2 = x ^ 2
-	local minRadius2 = minRadius ^ 2
-	local min = x2 < minRadius2 and math.sqrt(minRadius2 - x2) or 0
-	local max = math.sqrt(maxRadius ^ 2 - x2)
-	local z = (math.random(2) * 2 - 3) * (math.random() * (max - min) + min)
+	local radius = math.random() * (maxRadius - minRadius) + minRadius
+	local angle = math.random() * 2 * math.pi
+	local x = radius * math.cos(angle)
+	local z = radius * math.sin(angle)
 	object.setVelocity({ x, 0, z })
 end
 
