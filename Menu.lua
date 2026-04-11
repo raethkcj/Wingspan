@@ -36,7 +36,7 @@ local decks = { birdDeck, bonusDeck, goalDeck }
 
 local cardRot = { 0, 0, 180 }
 
-local nectarBagPos = { 7.43, 0.94, 6.96 }
+local nectarBagPos = { -3.98, 0.94, 6.60 }
 
 local hbirdDeck = "295346"
 local hbirdDeckPos = { -5.33, 1.17, 1.44 }
@@ -65,6 +65,8 @@ local playerTrays = {
 	Yellow = getObjectFromGUID("944536"),
 	Pink   = getObjectFromGUID("69c15e"),
 }
+
+local playerDecks = {}
 
 function onExpansionToggle(_player, value, expansion)
 	if value == "True" then
@@ -120,12 +122,10 @@ function enableExpansion(expansion)
 		foodBags.nectar.setPosition(nectarBagPos)
 		foodBags.nectar.interactable = true
 	end
+
 	if expansion == "am" then
 		cloneHummingbirdTracks()
 	end
-
-	-- TODO:
-	-- Deal Nectar if Oceania
 end
 
 function disableExpansion(expansion)
@@ -146,7 +146,10 @@ function disableExpansion(expansion)
 		foodBags.nectar.setPosition({ 0, -5, 0 })
 		foodBags.nectar.interactable = false
 	end
-	if expansion == "am" then
+
+	if expansion == "oe" then
+		-- destruct nectar
+	elseif expansion == "am" then
 		bag.putObject(getObjectFromGUID(hbirdDeck), 1)
 		bag.putObject(getObjectFromGUID(hbirdGarden), 1)
 		deleteHummingbirdTracks()
@@ -316,15 +319,60 @@ function startGame()
 	self.UI.setXmlTable(xml)
 	birdDeck.shuffle()
 	bonusDeck.shuffle()
-	-- TODO Cut decks if Flock Mode
-	birdDeck.deal(5)
+	assignDecks()
+	for playerColor, decks in pairs(playerDecks) do
+		decks.birdDeck.deal(5, playerColor)
+		decks.bonusDeck.deal(2, playerColor)
+	end
 	foodBags.invertebrate.deal(1)
 	foodBags.seed.deal(1)
 	foodBags.fruit.deal(1)
 	foodBags.fish.deal(1)
 	foodBags.rodent.deal(1)
-	bonusDeck.deal(2)
 	chooseInHand("start", 6, 6, "Choose a mix of 5 birds and food to discard. Also choose 1 bonus to discard.")
+end
+
+local flockDeckPos = {
+	birdDeck = { 26.93, 2, 2.56 },
+	bonusDeck = { 13.72, 2, 2.52 },
+}
+
+local standardDecks = {
+	birdDeck = birdDeck,
+	bonusDeck = bonusDeck,
+	birdDiscardPos = { -3.69, 2, -2.48 },
+	bonusDiscardPos = { 1.70, 2, -2.50 },
+}
+local flockDecks = {
+	birdDiscardPos = { 16.52, 2, 2.49 },
+	bonusDiscardPos = { 11.13, 2, 2.51 },
+}
+
+function assignDecks()
+	local players = getSeatedPlayers()
+	for _, playerColor in ipairs(players) do
+		playerDecks[playerColor] = standardDecks
+	end
+
+	if currentMode == Mode.Flock then
+		local birdDecks = birdDeck.split(2)
+		flockDecks.birdDeck = birdDecks[1]
+		flockDecks.birdDeck.setPositionSmooth(flockDeckPos.birdDeck, false)
+		flockDecks.birdDeck.setRotation(cardRot)
+		local bonusDecks = bonusDeck.split(2)
+		flockDecks.bonusDeck = bonusDecks[1]
+		flockDecks.bonusDeck.setPositionSmooth(flockDeckPos.bonusDeck, false)
+		flockDecks.bonusDeck.setRotation(cardRot)
+
+		playerDecks.Orange = playerDecks.Orange and flockDecks or nil
+		playerDecks.Red = playerDecks.Red and flockDecks or nil
+		if #players == 6 then
+			playerDecks.Yellow = playerDecks.Yellow and flockDecks or nil
+			playerDecks.Pink = playerDecks.Pink and flockDecks or nil
+		else
+			playerDecks.Blue = playerDecks.Blue and flockDecks or nil
+		end
+	end
 end
 
 function disableInputs(parent)
@@ -340,8 +388,16 @@ end
 function onPlayerHandChoice(playerColor, label, objects)
 	local valid, info = validateChoice(objects)
 	if valid then
-		discardChoice(objects)
+		discardChoice(playerColor, objects)
 		dumpFoodOnTray(playerColor)
+		if enabledExpansions["oe"] then
+			foodBags.nectar.takeObject({
+				index = 1,
+				callback_function = function(object)
+					dumpObjectOnTray(object, playerColor)
+				end
+			})
+		end
 	else
 		Player[playerColor].showInfoDialog(info)
 		chooseInHand("start", 6, 6, "Choose a mix of 5 birds and food to discard. Also choose 1 bonus to discard.", { playerColor })
@@ -371,33 +427,61 @@ function validateChoice(objects)
 	end
 end
 
-function discardChoice(objects)
+function discardChoice(playerColor, objects)
+	local decks = playerDecks[playerColor]
 	for _, object in ipairs(objects) do
 		for _, tag in ipairs(object.getTags()) do
 			if tag == "bird" then
-				birdDeck.putObject(object) -- TODO Should be discard pile
+				discardCard(object, decks, "birdDiscard", decks.birdDiscardPos)
+				break
 			elseif tag == "bonus" then
-				bonusDeck.putObject(object) -- TODO Should be discard pile
-			else
+				discardCard(object, decks, "bonusDiscard", decks.bonusDiscardPos)
+				break
+			elseif tag == "food" then
 				object.destruct()
 			end
 		end
 	end
 end
 
+local queuedDiscards = {}
+
+function discardCard(card, decks, deckName, deckPos)
+	if decks[deckName] then
+		decks[deckName].putObject(card)
+	else
+		card.setPosition(deckPos)
+		queuedDiscards[card] = { decks, deckName }
+	end
+end
+
+function onObjectEnterContainer(container, object)
+	if queuedDiscards[object] then
+		local deckInfo = queuedDiscards[object]
+		local decks, deckName = unpack(deckInfo)
+		decks[deckName] = container
+		queuedDiscards[container] = deckInfo
+		queuedDiscards[object] = nil
+	end
+end
+
+function dumpObjectOnTray(object, playerColor, verticalOffset)
+	object.use_hands = false
+	local position = playerTrays[playerColor].getPosition()
+	position[2] = 3 + (verticalOffset or 0)
+	object.setPosition(position)
+	-- Random float in range [2, 4] multiplied by random sign 1 or -1
+	local x = (math.random() * 2 + 2) * (math.random(2) * 2 - 3)
+	local z = (math.random() * 2 + 2) * (math.random(2) * 2 - 3)
+	object.setVelocity({ x, 0, z })
+end
+
 function dumpFoodOnTray(playerColor)
 	local hand = Player[playerColor].getHandObjects()
-	local position = playerTrays[playerColor].getPosition()
 	local i = 0
 	for _, object in ipairs(hand) do
 		if object.hasTag("food") then
-			object.use_hands = false
-			position[2] = 3 + i
-			object.setPosition(position)
-			-- Random float in range [2, 4] multiplied by random sign 1 or -1
-			local x = (math.random() * 2 + 2) * (math.random(2) * 2 - 3)
-			local z = (math.random() * 2 + 2) * (math.random(2) * 2 - 3)
-			object.setVelocity({ x, 0, z })
+			dumpObjectOnTray(object, playerColor, i)
 			i = i + 1
 		end
 	end
