@@ -476,6 +476,11 @@ function dumpObjectOnTray(object, playerColor, verticalOffset)
 	object.setVelocity({ x, 0, z })
 end
 
+-- Packed alias so other scripts can call()
+function dumpObjectOnTrayPacked(params)
+	dumpObjectOnTray(unpack(params))
+end
+
 function dumpFoodOnTray(playerColor)
 	local hand = Player[playerColor].getHandObjects()
 	local i = 0
