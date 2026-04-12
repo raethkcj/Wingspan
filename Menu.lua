@@ -68,6 +68,25 @@ local playerTrays = {
 
 local playerDecks = {}
 
+local diceTrays = {
+	Standard = getObjectFromGUID("418789"),
+	Flock    = getObjectFromGUID("887839"),
+}
+
+local dice = {
+	Standard = "e6d7ac",
+	Oceania  = "d416c7",
+}
+
+local DiceState = {
+	Standard     = 1,
+	Oceania      = 2,
+	Flock        = 3,
+	OceaniaFlock = 4,
+}
+
+local currentDiceState = DiceState.Standard
+
 function onExpansionToggle(_player, value, expansion)
 	if value == "True" then
 		enableExpansion(expansion)
@@ -76,8 +95,7 @@ function onExpansionToggle(_player, value, expansion)
 	end
 
 	setPlayerMatStates()
-
-	-- TODO: Oceania vs core dice
+	setDiceStates()
 end
 
 function onModeChanged(_player, modeString)
@@ -86,9 +104,8 @@ function onModeChanged(_player, modeString)
 	setGoalBoardState(mode)
 	updateTable(mode)
 	setFlockComponentState(mode)
-	-- TODO:
-	-- Oceania vs core dice
-	-- Duet Tokens: Prefer dealing to first two seated players, then choose defaults
+	setDiceStates()
+	-- TODO Duet Tokens: Prefer dealing to first two seated players, then choose defaults
 end
 
 function onPlayerChangeColor()
@@ -110,11 +127,11 @@ function enableExpansion(expansion)
 			end
 
 			if expansion == "am" and tag == "hummingbird" then
-				spawnContainerObject(bag, object.guid, hbirdDeckPos)
+				takeContainerObject(bag, object.guid, hbirdDeckPos)
 			end
 		end
 		if expansion == "am" and object.guid == hbirdGarden then
-			spawnContainerObject(bag, hbirdGarden, hbirdGardenPos)
+			takeContainerObject(bag, hbirdGarden, hbirdGardenPos)
 		end
 	end
 
@@ -179,6 +196,60 @@ function setPlayerMatStates()
 	end
 end
 
+function dumpOnStandardTray(object)
+	Wait.frames(function()
+		dumpObjectOnTray(object, diceTrays.Standard)
+	end, 4)
+end
+
+function dumpOnFlockTray(object)
+	Wait.frames(function()
+		dumpObjectOnTray(object, diceTrays.Flock)
+	end, 4)
+end
+
+function setDiceStates()
+	local state = DiceState.Standard
+	if currentMode == Mode.Flock and enabledExpansions["oe"] then
+		state = DiceState.OceaniaFlock
+	elseif currentMode == Mode.Flock then
+		state = DiceState.Flock
+	elseif enabledExpansions["oe"] then
+		state = DiceState.Oceania
+	end
+
+	if state ~= currentDiceState then
+		for j, dice in ipairs(getObjectsWithTag("Dice")) do
+			dice.destruct()
+		end
+		if state == DiceState.Standard then
+			for i = 1, 5 do
+				spawnContainerObject(expansionBags.Core, dice.Standard, dumpOnStandardTray)
+			end
+		elseif state == DiceState.Oceania then
+			for i = 1, 5 do
+				spawnContainerObject(expansionBags.oe, dice.Oceania, dumpOnStandardTray)
+			end
+		elseif state == DiceState.Flock then
+			for i = 1, 5 do
+				spawnContainerObject(expansionBags.Core, dice.Standard, dumpOnStandardTray)
+				spawnContainerObject(expansionBags.Core, dice.Standard, dumpOnFlockTray)
+			end
+		elseif state == DiceState.OceaniaFlock then
+			for i = 1, 3 do
+				spawnContainerObject(expansionBags.Core, dice.Standard, dumpOnStandardTray)
+				spawnContainerObject(expansionBags.Core, dice.Standard, dumpOnFlockTray)
+			end
+			for i = 1, 2 do
+				spawnContainerObject(expansionBags.oe, dice.Oceania, dumpOnStandardTray)
+				spawnContainerObject(expansionBags.oe, dice.Oceania, dumpOnFlockTray)
+			end
+		end
+	end
+
+	currentDiceState = state
+end
+
 function moveContainerObject(oldContainer, guid, newContainer)
 	oldContainer.takeObject({
 		guid = guid,
@@ -196,7 +267,7 @@ local unlockedObjects = {
 	Token = true,
 }
 
-function spawnContainerObject(container, guid, position)
+function takeContainerObject(container, guid, position)
 	container.takeObject({
 		guid = guid,
 		position = position,
@@ -465,27 +536,33 @@ function onObjectEnterContainer(container, object)
 	end
 end
 
-local offset = 0
+do
+	local offset = 0
 
-function dumpObjectOnTray(object, playerColor)
-	object.use_hands = false
-	local position = playerTrays[playerColor].getPosition()
-	position[2] = 3 + offset
-	offset = (offset + 1) % 5
-	object.setPosition(position)
-	-- Random position on a donut with radii in [min, max]
-	local minRadius = 2
-	local maxRadius = 5
-	local radius = math.random() * (maxRadius - minRadius) + minRadius
-	local angle = math.random() * 2 * math.pi
-	local x = radius * math.cos(angle)
-	local z = radius * math.sin(angle)
-	object.setVelocity({ x, 0, z })
+	function dumpObjectOnTray(object, tray)
+		object.use_hands = false
+		local position = tray.getPosition()
+		position[2] = 3 + offset
+		offset = (offset + 1) % 5
+		object.setPosition(position)
+		-- Random position on a donut with radii in [min, max]
+		local minRadius = 2
+		local maxRadius = 5
+		local radius = math.random() * (maxRadius - minRadius) + minRadius
+		local angle = math.random() * 2 * math.pi
+		local x = radius * math.cos(angle)
+		local z = radius * math.sin(angle)
+		object.setVelocity({ x, 0, z })
+	end
+end
+
+function dumpObjectOnPlayerTray(object, playerColor)
+	dumpObjectOnTray(object, playerTrays[playerColor])
 end
 
 -- Packed alias so other scripts can call()
-function dumpObjectOnTrayPacked(params)
-	dumpObjectOnTray(unpack(params))
+function dumpObjectOnPlayerTrayPacked(params)
+	dumpObjectOnPlayerTray(unpack(params))
 end
 
 function dumpFoodOnTray(playerColor)
@@ -493,6 +570,30 @@ function dumpFoodOnTray(playerColor)
 	for _, object in ipairs(hand) do
 		if object.hasTag("food") then
 			dumpObjectOnTray(object, playerColor)
+		end
+	end
+end
+
+do
+	local offset = 0
+
+	function spawnContainerObject(container, guid, callback)
+		local containerData = container.getData()
+		for _, objectData in ipairs(containerData.ContainedObjects) do
+			if objectData.GUID == guid then
+				local position = container.getPosition()
+				position[2] = position[2] + 3 + offset
+				offset = (offset + 1) % 5
+				Wait.frames(
+					function()
+						spawnObjectData({
+							data = objectData,
+							position = position,
+							callback_function = callback,
+						})
+					end
+				)
+			end
 		end
 	end
 end

@@ -53,7 +53,7 @@ function moveToTray(object)
 			Wait.frames(function()
 				if not object.isDestroyed() then
 					-- Need to wait 1 frame between unlock and setVelocity
-					Menu.call("dumpObjectOnTrayPacked", { object, playerColor })
+					Menu.call("dumpObjectOnPlayerTrayPacked", { object, playerColor })
 					Global.call("removeFilteredContainerObject", object)
 				end
 			end)
