@@ -1,0 +1,21 @@
+{
+  "name": "wingspan",
+  "version": "1.0.0",
+  "description": "",
+  "main": "birds.mts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "GPL-2.0",
+  "engines": {
+    "node": "~22"
+  },
+  "dependencies": {
+    "typescript": "^5.8.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.19.17",
+    "tsx": "^4.19.2"
+  }
+}
