@@ -38,6 +38,7 @@ function updateZone(zone)
 	local eggs = 0
 	local food = 0
 	local tucked = 0
+	local birds = 0
 
 	local objects = zone.getObjects()
 	for _, object in ipairs(objects) do
@@ -54,11 +55,14 @@ function updateZone(zone)
 				if object.is_face_down then
 					local count = math.max(object.getQuantity(), 1)
 					tucked = tucked + count
+				else
+					birds = birds + (tonumber(object.memo) or 0)
 				end
 			end
 		end
 	end
 
+	Scoresheet.call("setBirdPoints", { playerColor, birds })
 	Scoresheet.call("setEggPoints", { playerColor, eggs })
 	Scoresheet.call("setFoodPoints", { playerColor, food })
 	Scoresheet.call("setTuckedPoints", { playerColor, tucked })

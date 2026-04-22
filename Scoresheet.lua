@@ -67,13 +67,6 @@ function initializeName(cell, player)
 	playerPoints[player.color] = {}
 end
 
-function initializeBirdPoints(cell, player)
-	local id = newOnPointsInput(player, "birds") 
-	cell.children[1].attributes.id = id
-	local points = tonumber(cell.children[1].value) or 0
-	return points
-end
-
 function initializeBonusPoints(cell, player)
 	local id = newOnPointsInput(player, "bonuses") 
 	cell.children[1].attributes.id = id
@@ -108,7 +101,7 @@ end
 
 rowInitializers = {
 	names   = initializeName,
-	birds   = initializeBirdPoints,
+	birds   = initializeZero,
 	bonuses = initializeBonusPoints,
 	goals   = initializeZero,
 	eggs    = initializeZero,
@@ -175,6 +168,17 @@ function setCellPoints(rowName, playerColor, points)
 			cell.children[1].value = points
 			break
 		end
+	end
+end
+
+function setBirdPoints(params)
+	local playerColor, points = params[1], params[2]
+	local rowPoints = playerPoints[playerColor]
+	if rowPoints and rowPoints["birds"] ~= points then
+		rowPoints["birds"] = points
+		setCellPoints("birds", playerColor, points)
+		setTotalPoints(playerColor)
+		xmlNeedsUpdate = true
 	end
 end
 

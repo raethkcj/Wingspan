@@ -28,13 +28,13 @@
 			<InputField onEndEdit="onPointsInput"/>
 		</Defaults>
 		<Row id="birds">
-			<Cell><InputField></InputField></Cell>
-			<Cell><InputField></InputField></Cell>
-			<Cell><InputField></InputField></Cell>
-			<Cell><InputField></InputField></Cell>
-			<Cell><InputField></InputField></Cell>
-			<Cell><InputField></InputField></Cell>
-			<Cell><InputField></InputField></Cell>
+			<Cell><Text></Text></Cell>
+			<Cell><Text></Text></Cell>
+			<Cell><Text></Text></Cell>
+			<Cell><Text></Text></Cell>
+			<Cell><Text></Text></Cell>
+			<Cell><Text></Text></Cell>
+			<Cell><Text></Text></Cell>
 		</Row>
 		<Row id="bonuses">
 			<Cell><InputField></InputField></Cell>
