@@ -68,7 +68,14 @@ function initializeName(cell, player)
 end
 
 function initializeBonusPoints(cell, player)
-	local id = newOnPointsInput(player, "bonuses") 
+	local id = newOnPointsInput(player, "bonuses")
+	cell.children[1].attributes.id = id
+	local points = tonumber(cell.children[1].value) or 0
+	return points
+end
+
+function initializeDuetPoints(cell, player)
+	local id = newOnPointsInput(player, "duet")
 	cell.children[1].attributes.id = id
 	local points = tonumber(cell.children[1].value) or 0
 	return points
@@ -77,7 +84,7 @@ end
 function initializeNectarPoints(cell, player)
 	local points = 0
 	for i, inputField in ipairs(cell.children) do
-		local id = newOnPointsInput(player, inputField.attributes.habitat) 
+		local id = newOnPointsInput(player, inputField.attributes.habitat)
 		inputField.attributes.id = id
 		points = points + (tonumber(inputField.value) or 0)
 	end
@@ -107,7 +114,7 @@ rowInitializers = {
 	eggs    = initializeZero,
 	food    = initializeZero,
 	tucked  = initializeZero,
-	duet    = initializeZero,
+	duet    = initializeDuetPoints,
 	nectar  = initializeNectarPoints,
 	hbird   = initializeZero,
 	total   = initializeZero,

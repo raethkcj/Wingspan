@@ -82,13 +82,13 @@
 			<Cell><Text></Text></Cell>
 		</Row>
 		<Row id="duet">
-			<Cell><Text></Text></Cell>
-			<Cell><Text></Text></Cell>
-			<Cell><Text></Text></Cell>
-			<Cell><Text></Text></Cell>
-			<Cell><Text></Text></Cell>
-			<Cell><Text></Text></Cell>
-			<Cell><Text></Text></Cell>
+			<Cell><InputField></InputField></Cell>
+			<Cell><InputField></InputField></Cell>
+			<Cell><InputField></InputField></Cell>
+			<Cell><InputField></InputField></Cell>
+			<Cell><InputField></InputField></Cell>
+			<Cell><InputField></InputField></Cell>
+			<Cell><InputField></InputField></Cell>
 		</Row>
 		<Defaults>
 			<InputField ignoreLayout="true" width="33%" height="100%"/>
