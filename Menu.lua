@@ -29,7 +29,7 @@ local Mode = {
 
 local currentMode = Mode.Standard
 
-local birdDeck = getObjectFromGUID("6a8307")
+local birdDeck = getObjectFromGUID("5953b4")
 local bonusDeck = getObjectFromGUID("a71713")
 local goalDeck = getObjectFromGUID("dc9bc7")
 local decks = { birdDeck, bonusDeck, goalDeck }
