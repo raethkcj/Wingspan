@@ -1,3 +1,5 @@
+---@diagnostic disable: lowercase-global
+
 local UI = self.UI
 local scoresheetXml
 local rows = {}

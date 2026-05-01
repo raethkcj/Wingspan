@@ -1,3 +1,5 @@
+---@diagnostic disable: lowercase-global
+
 local playerMatZones = {}
 
 function onLoad()

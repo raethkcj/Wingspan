@@ -1,3 +1,5 @@
+---@diagnostic disable: lowercase-global
+
 local expansionBags = {
 	Core = getObjectFromGUID("64aee4"),
 	ee   = getObjectFromGUID("cf00dc"),
@@ -32,7 +34,7 @@ local currentMode = Mode.Standard
 local birdDeck = getObjectFromGUID("5953b4")
 local bonusDeck = getObjectFromGUID("a71713")
 local goalDeck = getObjectFromGUID("dc9bc7")
-local decks = { birdDeck, bonusDeck, goalDeck }
+local Decks = { birdDeck, bonusDeck, goalDeck }
 
 local cardRot = { 0, 0, 180 }
 
@@ -73,7 +75,7 @@ local diceTrays = {
 	Flock    = getObjectFromGUID("887839"),
 }
 
-local dice = {
+local Dice = {
 	Standard = "e6d7ac",
 	Oceania  = "d416c7",
 }
@@ -148,7 +150,7 @@ end
 function disableExpansion(expansion)
 	enabledExpansions[expansion] = nil
 	local bag = expansionBags[expansion]
-	for _, deck in ipairs(decks) do
+	for _, deck in ipairs(Decks) do
 		local objects = deck.getObjects()
 		for _, object in ipairs(objects) do
 			for _, tag in ipairs(object.tags) do
@@ -219,30 +221,30 @@ function setDiceStates()
 	end
 
 	if state ~= currentDiceState then
-		for j, dice in ipairs(getObjectsWithTag("Dice")) do
+		for _, dice in ipairs(getObjectsWithTag("Dice")) do
 			dice.destruct()
 		end
 		if state == DiceState.Standard then
 			for i = 1, 5 do
-				spawnContainerObject(expansionBags.Core, dice.Standard, dumpOnStandardTray)
+				spawnContainerObject(expansionBags.Core, Dice.Standard, dumpOnStandardTray)
 			end
 		elseif state == DiceState.Oceania then
 			for i = 1, 5 do
-				spawnContainerObject(expansionBags.oe, dice.Oceania, dumpOnStandardTray)
+				spawnContainerObject(expansionBags.oe, Dice.Oceania, dumpOnStandardTray)
 			end
 		elseif state == DiceState.Flock then
 			for i = 1, 5 do
-				spawnContainerObject(expansionBags.Core, dice.Standard, dumpOnStandardTray)
-				spawnContainerObject(expansionBags.Core, dice.Standard, dumpOnFlockTray)
+				spawnContainerObject(expansionBags.Core, Dice.Standard, dumpOnStandardTray)
+				spawnContainerObject(expansionBags.Core, Dice.Standard, dumpOnFlockTray)
 			end
 		elseif state == DiceState.OceaniaFlock then
 			for i = 1, 3 do
-				spawnContainerObject(expansionBags.Core, dice.Standard, dumpOnStandardTray)
-				spawnContainerObject(expansionBags.Core, dice.Standard, dumpOnFlockTray)
+				spawnContainerObject(expansionBags.Core, Dice.Standard, dumpOnStandardTray)
+				spawnContainerObject(expansionBags.Core, Dice.Standard, dumpOnFlockTray)
 			end
 			for i = 1, 2 do
-				spawnContainerObject(expansionBags.oe, dice.Oceania, dumpOnStandardTray)
-				spawnContainerObject(expansionBags.oe, dice.Oceania, dumpOnFlockTray)
+				spawnContainerObject(expansionBags.oe, Dice.Oceania, dumpOnStandardTray)
+				spawnContainerObject(expansionBags.oe, Dice.Oceania, dumpOnFlockTray)
 			end
 		end
 	end
@@ -529,7 +531,7 @@ end
 function onObjectEnterContainer(container, object)
 	if queuedDiscards[object] then
 		local deckInfo = queuedDiscards[object]
-		local decks, deckName = unpack(deckInfo)
+		local decks, deckName = table.unpack(deckInfo)
 		decks[deckName] = container
 		queuedDiscards[container] = deckInfo
 		queuedDiscards[object] = nil
@@ -562,7 +564,7 @@ end
 
 -- Packed alias so other scripts can call()
 function dumpObjectOnPlayerTrayPacked(params)
-	dumpObjectOnPlayerTray(unpack(params))
+	dumpObjectOnPlayerTray(table.unpack(params))
 end
 
 function dumpFoodOnTray(playerColor)

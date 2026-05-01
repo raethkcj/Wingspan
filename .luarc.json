@@ -1,0 +1,14 @@
+{
+    "Lua.diagnostics.globals": [
+        "Wait",
+        "Player",
+        "getObjectFromGUID",
+        "spawnObjectData",
+        "getObjectsWithTag",
+        "getObjectsWithAnyTags",
+        "getSeatedPlayers",
+        "Tables",
+        "self",
+        "chooseInHand"
+    ]
+}
