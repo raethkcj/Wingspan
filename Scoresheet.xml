@@ -2,11 +2,16 @@
 <Defaults>
 	<Text fontSize="60" />
 	<InputField
+		onEndEdit="onPointsInput"
 		characterValidation="Integer"
 		fontSize="60"
 		characterLimit="3"
 		color="clear"
 		placeholder="0"
+		ignoreLayout="true"
+		width="100%"
+		height="100%"
+		offsetXY="120 -50"
 	/>
 </Defaults>
 <Panel width="2295" height="2270" position="405 80 -12" padding="0">
@@ -25,7 +30,6 @@
 		</Row>
 		<Defaults>
 			<Cell dontUseTableCellBackground="false"/>
-			<InputField onEndEdit="onPointsInput"/>
 		</Defaults>
 		<Row id="birds">
 			<Cell><Text></Text></Cell>
