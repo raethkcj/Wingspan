@@ -91,43 +91,43 @@
 			<Cell><InputField></InputField></Cell>
 		</Row>
 		<Defaults>
-			<InputField ignoreLayout="true" width="33%" height="100%"/>
+			<Text ignoreLayout="true" width="33%" height="100%"/>
 		</Defaults>
 		<Row id="nectar">
 			<Cell>
-				<InputField offsetXY="-100 -100" habitat="forest"/>
-				<InputField offsetXY="0 -100" habitat="grassland"/>
-				<InputField offsetXY="100 -100" habitat="wetland"/>
+				<Text offsetXY="-100 -50" habitat="forest"/>
+				<Text offsetXY="0 -50" habitat="grassland"/>
+				<Text offsetXY="100 -50" habitat="wetland"/>
 			</Cell>
 			<Cell>
-				<InputField offsetXY="-100 -100" habitat="forest"/>
-				<InputField offsetXY="0 -100" habitat="grassland"/>
-				<InputField offsetXY="100 -100" habitat="wetland"/>
+				<Text offsetXY="-100 -50" habitat="forest"/>
+				<Text offsetXY="0 -50" habitat="grassland"/>
+				<Text offsetXY="100 -50" habitat="wetland"/>
 			</Cell>
 			<Cell>
-				<InputField offsetXY="-100 -100" habitat="forest"/>
-				<InputField offsetXY="0 -100" habitat="grassland"/>
-				<InputField offsetXY="100 -100" habitat="wetland"/>
+				<Text offsetXY="-100 -50" habitat="forest"/>
+				<Text offsetXY="0 -50" habitat="grassland"/>
+				<Text offsetXY="100 -50" habitat="wetland"/>
 			</Cell>
 			<Cell>
-				<InputField offsetXY="-100 -100" habitat="forest"/>
-				<InputField offsetXY="0 -100" habitat="grassland"/>
-				<InputField offsetXY="100 -100" habitat="wetland"/>
+				<Text offsetXY="-100 -50" habitat="forest"/>
+				<Text offsetXY="0 -50" habitat="grassland"/>
+				<Text offsetXY="100 -50" habitat="wetland"/>
 			</Cell>
 			<Cell>
-				<InputField offsetXY="-100 -100" habitat="forest"/>
-				<InputField offsetXY="0 -100" habitat="grassland"/>
-				<InputField offsetXY="100 -100" habitat="wetland"/>
+				<Text offsetXY="-100 -50" habitat="forest"/>
+				<Text offsetXY="0 -50" habitat="grassland"/>
+				<Text offsetXY="100 -50" habitat="wetland"/>
 			</Cell>
 			<Cell>
-				<InputField offsetXY="-100 -100" habitat="forest"/>
-				<InputField offsetXY="0 -100" habitat="grassland"/>
-				<InputField offsetXY="100 -100" habitat="wetland"/>
+				<Text offsetXY="-100 -50" habitat="forest"/>
+				<Text offsetXY="0 -50" habitat="grassland"/>
+				<Text offsetXY="100 -50" habitat="wetland"/>
 			</Cell>
 			<Cell>
-				<InputField offsetXY="-100 -100" habitat="forest"/>
-				<InputField offsetXY="0 -100" habitat="grassland"/>
-				<InputField offsetXY="100 -100" habitat="wetland"/>
+				<Text offsetXY="-100 -50" habitat="forest"/>
+				<Text offsetXY="0 -50" habitat="grassland"/>
+				<Text offsetXY="100 -50" habitat="wetland"/>
 			</Cell>
 		</Row>
 		<Row id="hbird">

@@ -83,19 +83,11 @@ function initializeDuetPoints(cell, player)
 	return points
 end
 
-function initializeNectarPoints(cell, player)
-	local points = 0
-	for i, inputField in ipairs(cell.children) do
-		local id = newOnPointsInput(player, inputField.attributes.habitat)
-		inputField.attributes.id = id
-		points = points + (tonumber(inputField.value) or 0)
-	end
-	return points
-end
-
 function initializeZero(cell, player)
-	cell.children[1].attributes.value = 0
-	cell.children[1].value = 0
+	for _, child in ipairs(cell.children) do
+		child.attributes.value = 0
+		child.value = 0
+	end
 end
 
 function setTotalPoints(playerColor)
@@ -117,7 +109,7 @@ rowInitializers = {
 	food    = initializeZero,
 	tucked  = initializeZero,
 	duet    = initializeDuetPoints,
-	nectar  = initializeNectarPoints,
+	nectar  = initializeZero,
 	hbird   = initializeZero,
 	total   = initializeZero,
 }

@@ -1,18 +1,18 @@
 ---@diagnostic disable: lowercase-global
 
-local Biome = {
-	Forest = true,
-	Grassland = true,
-	Wetland = true,
+local Habitat = {
+	forest = true,
+	grassland = true,
+	wetland = true,
 }
 
-local zoneBiomes = {}
-local biomeNectar = {}
+local zoneHabitats = {}
+local habitatNectar = {}
 
 function onLoad()
 	Scoresheet = getObjectFromGUID("c7f86b")
     setupZones()
-	biomeNectar.playerColor = self.getMemo()
+	habitatNectar.playerColor = self.getMemo()
 end
 
 function tryStateChange(_newStateIndex, _playerColor)
@@ -27,21 +27,21 @@ function setupZones()
 	local snaps = self.getSnapPoints()
 	for _, snap in ipairs(snaps) do
 		local nectar = nil
-		local biome = nil
+		local habitat = nil
 		for _, tag in ipairs(snap.tags) do
 			if tag == "nectar" then
 				nectar = true
-			elseif Biome[tag] then
-				biome = tag
+			elseif Habitat[tag] then
+				habitat = tag
 			end
 		end
-		if nectar and biome then
-			spawnZone(snap, biome)
+		if nectar and habitat then
+			spawnZone(snap, habitat)
 		end
 	end
 end
 
-function spawnZone(snap, biome)
+function spawnZone(snap, habitat)
 	spawnObject({
 		type = "ScriptingTrigger",
 		position = self.positionToWorld(snap.position),
@@ -49,29 +49,29 @@ function spawnZone(snap, biome)
 		sound = false,
 		callback_function = function(zone)
 			zone.setTags({ "nectar" })
-			zoneBiomes[zone.guid] = biome
+			zoneHabitats[zone.guid] = habitat
 		end,
 	})
 end
 
 function destroyZones()
-	for zoneGUID in pairs(zoneBiomes) do
+	for zoneGUID in pairs(zoneHabitats) do
 		local zone = getObjectFromGUID(zoneGUID)
 		if zone then
 			zone.destruct()
 		end
-		zoneBiomes[zoneGUID] = nil
+		zoneHabitats[zoneGUID] = nil
 	end
 end
 
 function onObjectEnterZone(zone, _object)
-	if zoneBiomes[zone.guid] then
+	if zoneHabitats[zone.guid] then
 		updateZone(zone)
 	end
 end
 
 function onObjectLeaveZone(zone, _object)
-	if zoneBiomes[zone.guid] then
+	if zoneHabitats[zone.guid] then
 		updateZone(zone)
 	end
 end
@@ -82,6 +82,6 @@ function updateZone(zone)
 	for _, object in ipairs(objects) do
 		count = count + math.max(object.getQuantity(), 1)
 	end
-	biomeNectar[zoneBiomes[zone.guid]] = count
-	Scoresheet.call("setNectarBiome", biomeNectar)
+	habitatNectar[zoneHabitats[zone.guid]] = count
+	Scoresheet.call("setHabitatNectar", habitatNectar)
 end
