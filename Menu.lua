@@ -571,7 +571,7 @@ function dumpFoodOnTray(playerColor)
 	local hand = Player[playerColor].getHandObjects()
 	for _, object in ipairs(hand) do
 		if object.hasTag("food") then
-			dumpObjectOnTray(object, playerColor)
+			dumpObjectOnPlayerTray(object, playerColor)
 		end
 	end
 end
