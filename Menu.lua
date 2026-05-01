@@ -48,7 +48,7 @@ local hbirdTrackSource = getObjectFromGUID("a706e1")
 hbirdTrackSource.interactable = false
 local hbirdTracks = {}
 
-local playerMats = {
+local PlayerMat = {
 	White  = getObjectFromGUID("a4346b"),
 	Green  = getObjectFromGUID("c92aff"),
 	Blue   = getObjectFromGUID("30fc97"),
@@ -57,6 +57,15 @@ local playerMats = {
 	Yellow = getObjectFromGUID("08d8e4"),
 	Pink   = getObjectFromGUID("86b0b0"),
 }
+
+local PlayerMatState = {
+	Standard        = 1,
+	Oceania         = 2,
+	Americas        = 3,
+	OceaniaAmericas = 4,
+}
+
+local playerMatScript = getObjectFromGUID("d14765").getLuaScript()
 
 local playerTrays = {
 	White  = getObjectFromGUID("d57317"),
@@ -176,22 +185,25 @@ function disableExpansion(expansion)
 end
 
 function setPlayerMatStates()
-	local playerMatState = 1
+	local playerMatState = PlayerMatState.Standard
 	if enabledExpansions["am"] and enabledExpansions["oe"] then
-		playerMatState = 4
+		playerMatState = PlayerMatState.OceaniaAmericas
 	elseif enabledExpansions["am"] then
-		playerMatState = 3
+		playerMatState = PlayerMatState.Americas
 	elseif enabledExpansions["oe"] then
-		playerMatState = 2
+		playerMatState = PlayerMatState.Oceania
 	end
-	for player, playerMat in pairs(playerMats) do
+	for player, playerMat in pairs(PlayerMat) do
 		local states = playerMat.getStates()
 		local newStateGUID = playerMat.guid
 		for _, state in ipairs(states) do
 			if state.id == playerMatState then
 				newStateGUID = state.guid
 				playerMat.setState(playerMatState)
-				playerMats[player] = getObjectFromGUID(newStateGUID)
+				local newMat = getObjectFromGUID(newStateGUID)
+				PlayerMat[player] = newMat
+				newMat.setLuaScript(playerMatScript)
+				newMat.setMemo(player)
 				break
 			end
 		end
@@ -284,7 +296,7 @@ function takeContainerObject(container, guid, position)
 end
 
 function cloneHummingbirdTracks()
-	for _, playerMat in pairs(playerMats) do
+	for _, playerMat in pairs(PlayerMat) do
 		local rotation = playerMat.getRotation()
 		local scale = playerMat.getScale()
 		local position = playerMat.positionToWorld({ -9.35 / scale[1], 4.96, 1.75 / scale[3] })

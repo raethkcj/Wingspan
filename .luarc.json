@@ -9,6 +9,7 @@
         "getSeatedPlayers",
         "Tables",
         "self",
-        "chooseInHand"
+        "chooseInHand",
+        "spawnObject"
     ]
 }
