@@ -4,6 +4,7 @@ local UI = self.UI
 local scoresheetXml
 local rows = {}
 local playerPoints = {}
+local playerHabitatNectar = {}
 
 local nextInputID = 1
 local inputIDs = {}
@@ -126,32 +127,13 @@ function onPointsInput(_player, value, idString)
 	end
 end
 
-local nectarLabels = {
-	forest = true,
-	grassland = true,
-	wetland = true,
-}
-
-function newOnPointsInput(player, label)
+function newOnPointsInput(player, rowName)
 	local id = nextInputID
 	inputIDs[id] = function(value)
-		playerPoints[player.color][label] = tonumber(value)
-		local rowName = label
-		if nectarLabels[label] then
-			rowName = "nectar"
-		end
+		playerPoints[player.color][rowName] = tonumber(value)
 		for _, cell in ipairs(rows[rowName].children) do
 			if cell.attributes.playerColor == player.color then
-				if not nectarLabels[label] then
-					cell.children[1].value = value
-				else
-					for _, inputField in ipairs(cell.children) do
-						if inputField.attributes.habitat == label then
-							inputField.value = value
-							break
-						end
-					end
-				end
+				cell.children[1].value = value
 				break
 			end
 		end
@@ -227,6 +209,100 @@ function setTuckedPoints(params)
 end
 
 function setDuetPoints(duetPoints)
+end
+
+function setHabitatNectar(params)
+	local playerColor, habitatNectar = table.unpack(params)
+	playerHabitatNectar[playerColor] = habitatNectar
+	updateHabitatNectar()
+end
+
+---@alias TopHabitatPlayers { [string]: string[][] }
+
+function updateHabitatNectar()
+	local topHabitatNectar = {
+		forest = {},
+		grassland = {},
+		wetland = {},
+	}
+	---@type TopHabitatPlayers
+	local topHabitatPlayers = {
+		forest = {},
+		grassland = {},
+		wetland = {},
+	}
+	for playerColor, habitatNectar in pairs(playerHabitatNectar) do
+		for habitat, nectar in pairs(habitatNectar) do
+			if nectar > 0 then
+				local topNectar = topHabitatNectar[habitat]
+				local firstNectar, secondNectar = table.unpack(topNectar)
+				if not firstNectar then
+					table.insert(topHabitatNectar[habitat], 1, nectar)
+					table.insert(topHabitatPlayers[habitat], 1, { playerColor })
+				elseif nectar > firstNectar then
+					table.insert(topHabitatNectar[habitat], 1, nectar)
+					table.insert(topHabitatPlayers[habitat], 1, { playerColor })
+				elseif nectar == firstNectar then
+					table.insert(topHabitatPlayers[habitat][1], playerColor)
+				elseif not secondNectar or nectar > secondNectar then
+					table.insert(topHabitatNectar[habitat], 2, nectar)
+					table.insert(topHabitatPlayers[habitat], 2, { playerColor })
+				elseif nectar == secondNectar then
+					table.insert(topHabitatPlayers[habitat][2], playerColor)
+				end
+			end
+		end
+	end
+	setNectarPoints(topHabitatPlayers)
+end
+
+---@param topHabitatPlayers TopHabitatPlayers
+function setNectarPoints(topHabitatPlayers)
+	for playerColor, rowPoints in pairs(playerPoints) do
+		for habitat, places in pairs(topHabitatPlayers) do
+			local points = 0
+			for i = 1, 2 do
+				local tied = false
+				local players = places[i]
+				if players then
+					if #players > 1 then
+						tied = true
+					end
+					for _, player in ipairs(players) do
+						if player == playerColor then
+							points = i == 1 and 5 or 2
+							if tied then
+								points = i == 1 and 7 or 2
+								points = math.floor(points / #players)
+							end
+						end
+					end
+				end
+				if tied then break end
+			end
+			if rowPoints[habitat] ~= points then
+				rowPoints[habitat] = points
+				setNectarCellPoints(playerColor, habitat, points)
+				setTotalPoints(playerColor)
+				xmlNeedsUpdate = true
+			end
+		end
+	end
+end
+
+function setNectarCellPoints(playerColor, habitat, points)
+	for _, cell in ipairs(rows["nectar"].children) do
+		if cell.attributes.playerColor == playerColor then
+			for _, text in ipairs(cell.children) do
+				if text.attributes.habitat == habitat then
+					text.attributes.value = points
+					text.value = points
+					break
+				end
+			end
+			break
+		end
+	end
 end
 
 function setHummingbirdPoints(hummingbirdPoints)

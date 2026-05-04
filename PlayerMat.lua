@@ -12,7 +12,6 @@ local habitatNectar = {}
 function onLoad()
 	Scoresheet = getObjectFromGUID("c7f86b")
     setupZones()
-	habitatNectar.playerColor = self.getMemo()
 end
 
 function tryStateChange(_newStateIndex, _playerColor)
@@ -77,11 +76,21 @@ function onObjectLeaveZone(zone, _object)
 end
 
 function updateZone(zone)
+	local playerColor = self.getMemo()
+	local players = getSeatedPlayers()
+	local seated = false
+	for _, color in ipairs(players) do
+		if color == playerColor then
+			seated = true
+			break
+		end
+	end
+	if not seated then return end
 	local objects = zone.getObjects()
 	local count = 0
 	for _, object in ipairs(objects) do
 		count = count + math.max(object.getQuantity(), 1)
 	end
 	habitatNectar[zoneHabitats[zone.guid]] = count
-	Scoresheet.call("setHabitatNectar", habitatNectar)
+	Scoresheet.call("setHabitatNectar", { playerColor, habitatNectar })
 end
