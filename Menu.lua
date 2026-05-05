@@ -40,7 +40,7 @@ local cardRot = { 0, 0, 180 }
 
 local nectarBagPos = { -3.98, 0.94, 6.60 }
 
-local hbirdDeck = "295346"
+local hbirdDeckGUID = "295346"
 local hbirdDeckPos = { -5.33, 1.17, 1.44 }
 local hbirdGarden = "59dd5b"
 local hbirdGardenPos = { 0.80, 1.06, 2.79 }
@@ -178,7 +178,7 @@ function disableExpansion(expansion)
 	if expansion == "oe" then
 		-- destruct nectar
 	elseif expansion == "am" then
-		bag.putObject(getObjectFromGUID(hbirdDeck), 1)
+		bag.putObject(getObjectFromGUID(hbirdDeckGUID), 1)
 		bag.putObject(getObjectFromGUID(hbirdGarden), 1)
 		deleteHummingbirdTracks()
 	end
@@ -377,12 +377,12 @@ function updateTable(mode)
 end
 
 local flockComponents = {
-	getObjectFromGUID("166ce5"), -- Card Mat
-	getObjectFromGUID("887839"), -- Birdfeeder
-	getObjectFromGUID("84cebc"), -- Spent Food Dice
+	birdTray      = getObjectFromGUID("166ce5"),
+	birdfeeder    = getObjectFromGUID("887839"),
+	spentFoodDice = getObjectFromGUID("84cebc"),
 }
 
-for _, component in ipairs(flockComponents) do
+for _, component in pairs(flockComponents) do
 	component.interactable = false
 end
 
@@ -390,7 +390,7 @@ local shownHeight = 0.96
 local hiddenHeight = -5
 
 function setFlockComponentState(mode)
-	for _, component in ipairs(flockComponents) do
+	for _, component in pairs(flockComponents) do
 		local position = component.getPosition()
 		position[2] = mode == Mode.Flock and shownHeight or hiddenHeight
 		component.setPosition(position)
@@ -404,7 +404,13 @@ function startGame()
 	self.UI.setXmlTable(xml)
 	birdDeck.shuffle()
 	bonusDeck.shuffle()
+	goalDeck.shuffle()
+	local hbirdDeck = getObjectFromGUID(hbirdDeckGUID)
+	if hbirdDeck then
+		hbirdDeck.shuffle()
+	end
 	assignDecks()
+	dealGlobalCards()
 	for playerColor, decks in pairs(playerDecks) do
 		decks.birdDeck.deal(5, playerColor)
 		decks.bonusDeck.deal(2, playerColor)
@@ -415,6 +421,16 @@ function startGame()
 	foodBags.fish.deal(1)
 	foodBags.rodent.deal(1)
 	chooseInHand("start", 6, 6, "Choose a mix of 5 birds and food to discard. Also choose 1 bonus to discard.")
+end
+
+function disableInputs(parent)
+	for _, element in ipairs(parent) do
+		if element.tag == "Button" or element.tag == "ToggleButton" then
+			element.attributes.interactable = "false"
+		elseif element.children then
+			disableInputs(element.children)
+		end
+	end
 end
 
 local flockDeckPos = {
@@ -428,6 +444,7 @@ local standardDecks = {
 	birdDiscardPos = { -3.69, 2, -2.48 },
 	bonusDiscardPos = { 1.70, 2, -2.50 },
 }
+
 local flockDecks = {
 	birdDiscardPos = { 16.52, 2, 2.49 },
 	bonusDiscardPos = { 11.13, 2, 2.51 },
@@ -460,12 +477,31 @@ function assignDecks()
 	end
 end
 
-function disableInputs(parent)
-	for _, element in ipairs(parent) do
-		if element.tag == "Button" or element.tag == "ToggleButton" then
-			element.attributes.interactable = "false"
-		elseif element.children then
-			disableInputs(element.children)
+function dealGlobalCards()
+	local dealTargets = {
+		[birdDeck] = getObjectFromGUID("73d70d"),
+		[flockDecks.birdDeck or false] = flockComponents.birdTray,
+		[goalDeck] = goalBoard,
+		[getObjectFromGUID(hbirdDeckGUID) or false] = getObjectFromGUID(hbirdGarden),
+	}
+
+	for deck, target in pairs(dealTargets) do
+		if deck then
+			for _, snap in ipairs(target.getSnapPoints()) do
+				for _, tag in ipairs(snap.tags) do
+					if tag == "deal" then
+						local position = target.positionToWorld(snap.position)
+						position[2] = position[2] + 1
+						deck.takeObject({
+							index = 1,
+							position = position,
+							flip = true,
+							smooth = false,
+						})
+						break
+					end
+				end
+			end
 		end
 	end
 end
