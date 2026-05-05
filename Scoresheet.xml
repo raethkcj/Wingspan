@@ -1,10 +1,11 @@
 <!-- Xml UI. See documentation: https://api.tabletopsimulator.com/ui/introUI/ -->
 <Defaults>
-	<Text fontSize="60" />
+	<Text font="Cardenio" fontSize="85" />
 	<InputField
 		onEndEdit="onPointsInput"
 		characterValidation="Integer"
-		fontSize="60"
+		font="Cardenio"
+		fontSize="85"
 		characterLimit="3"
 		color="clear"
 		placeholder="0"

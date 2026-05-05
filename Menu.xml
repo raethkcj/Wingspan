@@ -1,15 +1,17 @@
 <!-- Xml UI. See documentation: https://api.tabletopsimulator.com/ui/introUI/ -->
 <Defaults>
-	<Text fontSize="60" />
-	<Button fontSize="60" />
+	<Text font="Cardenio" fontSize="100" />
+	<Button font="Cardenio" fontSize="90" />
 	<ToggleButton
 		selectedBackgroundColor="#5fafff"
 		deselectedBackgroundColor="#afd7ff"
 		colors="white|#5f87d7|#5f87d7|white|white"
-		fontSize="50"
-		tooltipFontSize="50"
+		font="Cardenio"	
+		fontSize="85"
+		tooltipFont="Cardenio"
+		tooltipFontSize="85"
 		tooltipPosition="Below"
-		tooltipOffset="100"
+		tooltipOffset="50"
 	/>
 	<HorizontalLayout spacing="50"/>
 </Defaults>
@@ -53,7 +55,7 @@
 		</ToggleGroup>
 		<Text/>
 		<HorizontalLayout padding="400 400 0 0">
-			<Button onClick="startGame">Start</Button>
+			<Button onClick="startGame">Start Game</Button>
 		</HorizontalLayout>
 	</VerticalLayout>
 </Panel>
