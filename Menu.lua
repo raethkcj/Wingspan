@@ -398,6 +398,8 @@ function setFlockComponentState(mode)
 	end
 end
 
+local chooseHandMessage = "Select a mix of 5 Birds and Food Tokens to be discarded, and exactly 1 Bonus to be discarded."
+
 function startGame()
 	local xml = self.UI.getXmlTable()
 	disableInputs(xml)
@@ -411,16 +413,14 @@ function startGame()
 	end
 	assignDecks()
 	dealGlobalCards()
-	for playerColor, decks in pairs(playerDecks) do
-		decks.birdDeck.deal(5, playerColor)
-		decks.bonusDeck.deal(2, playerColor)
-	end
-	foodBags.invertebrate.deal(1)
-	foodBags.seed.deal(1)
-	foodBags.fruit.deal(1)
-	foodBags.fish.deal(1)
-	foodBags.rodent.deal(1)
-	chooseInHand("start", 6, 6, "Choose a mix of 5 birds and food to discard. Also choose 1 bonus to discard.")
+	dealBirds()
+	Wait.time(function()
+		dealFood()
+		Wait.time(function()
+			dealBonuses()
+			chooseInHandOrCancel("start", 6, 6, chooseHandMessage)
+		end, 0.5)
+	end, 0.5)
 end
 
 function disableInputs(parent)
@@ -506,6 +506,26 @@ function dealGlobalCards()
 	end
 end
 
+function dealBirds()
+	for playerColor, decks in pairs(playerDecks) do
+		decks.birdDeck.deal(5, playerColor)
+	end
+end
+
+function dealFood()
+	foodBags.invertebrate.deal(1)
+	foodBags.seed.deal(1)
+	foodBags.fruit.deal(1)
+	foodBags.fish.deal(1)
+	foodBags.rodent.deal(1)
+end
+
+function dealBonuses()
+	for playerColor, decks in pairs(playerDecks) do
+		decks.bonusDeck.deal(2, playerColor)
+	end
+end
+
 function onPlayerHandChoice(playerColor, label, objects)
 	local valid, info = validateChoice(objects)
 	if valid then
@@ -521,7 +541,7 @@ function onPlayerHandChoice(playerColor, label, objects)
 		end
 	else
 		Player[playerColor].showInfoDialog(info)
-		chooseInHand("start", 6, 6, "Choose a mix of 5 birds and food to discard. Also choose 1 bonus to discard.", { playerColor })
+		chooseInHandOrCancel("start", 6, 6, chooseHandMessage, { playerColor })
 	end
 end
 
