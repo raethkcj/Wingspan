@@ -64,10 +64,10 @@ function updateZone(zone)
 		end
 	end
 
-	Scoresheet.call("setBirdPoints", { playerColor, birds })
-	Scoresheet.call("setEggPoints", { playerColor, eggs })
-	Scoresheet.call("setFoodPoints", { playerColor, food })
-	Scoresheet.call("setTuckedPoints", { playerColor, tucked })
+	Scoresheet.call("setRowPoints", { playerColor, "birds",  birds })
+	Scoresheet.call("setRowPoints", { playerColor, "eggs",   eggs })
+	Scoresheet.call("setRowPoints", { playerColor, "food",   food })
+	Scoresheet.call("setRowPoints", { playerColor, "tucked", tucked })
 end
 
 local containerFilter = {}

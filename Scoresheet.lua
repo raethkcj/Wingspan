@@ -154,12 +154,12 @@ function setCellPoints(rowName, playerColor, points)
 	end
 end
 
-function setBirdPoints(params)
-	local playerColor, points = params[1], params[2]
+function setRowPoints(params)
+	local playerColor, rowName, points = table.unpack(params)
 	local rowPoints = playerPoints[playerColor]
-	if rowPoints and rowPoints["birds"] ~= points then
-		rowPoints["birds"] = points
-		setCellPoints("birds", playerColor, points)
+	if rowPoints and rowPoints[rowName] ~= points then
+		rowPoints[rowName] = points
+		setCellPoints(rowName, playerColor, points)
 		setTotalPoints(playerColor)
 		xmlNeedsUpdate = true
 	end
@@ -173,39 +173,6 @@ function setGoalPoints(goalPoints)
 		setTotalPoints(playerColor)
 	end
 	xmlNeedsUpdate = true
-end
-
-function setEggPoints(params)
-	local playerColor, points = params[1], params[2]
-	local rowPoints = playerPoints[playerColor]
-	if rowPoints and rowPoints["eggs"] ~= points then
-		rowPoints["eggs"] = points
-		setCellPoints("eggs", playerColor, points)
-		setTotalPoints(playerColor)
-		xmlNeedsUpdate = true
-	end
-end
-
-function setFoodPoints(params)
-	local playerColor, points = params[1], params[2]
-	local rowPoints = playerPoints[playerColor]
-	if rowPoints and rowPoints["food"] ~= points then
-		rowPoints["food"] = points
-		setCellPoints("food", playerColor, points)
-		setTotalPoints(playerColor)
-		xmlNeedsUpdate = true
-	end
-end
-
-function setTuckedPoints(params)
-	local playerColor, points = params[1], params[2]
-	local rowPoints = playerPoints[playerColor]
-	if rowPoints and rowPoints["tucked"] ~= points then
-		rowPoints["tucked"] = points
-		setCellPoints("tucked", playerColor, points)
-		setTotalPoints(playerColor)
-		xmlNeedsUpdate = true
-	end
 end
 
 function setDuetPoints(duetPoints)
@@ -302,16 +269,5 @@ function setNectarCellPoints(playerColor, habitat, points)
 			end
 			break
 		end
-	end
-end
-
-function setHummingbirdPoints(params)
-	local playerColor, points = table.unpack(params)
-	local rowPoints = playerPoints[playerColor]
-	if rowPoints and rowPoints["hbird"] ~= points then
-		rowPoints["hbird"] = points
-		setCellPoints("hbird", playerColor, points)
-		setTotalPoints(playerColor)
-		xmlNeedsUpdate = true
 	end
 end

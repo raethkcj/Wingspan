@@ -131,5 +131,5 @@ function updateHummingbirdPoints(playerColor)
             points = points + zonePoints[zoneGUID]
         end
 	end
-	Scoresheet.call("setHummingbirdPoints", { playerColor, points })
+	Scoresheet.call("setRowPoints", { playerColor, "hbird",  points })
 end
