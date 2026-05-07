@@ -346,7 +346,7 @@ local Table = {
 	Six = {
 		{
 			name = "table6",
-			url = "https://steamusercontent-a.akamaihd.net/ugc/9698628281126128536/00C796CA38660F6D474CEA7EF5D301300C8387AE",
+			url = "https://steamusercontent-a.akamaihd.net/ugc/9698628281126128536/00C796CA38660F6D474CEA7EF5D301300C8387AE/",
 			position = { 0, 3.046875, 0 },
 			rotation = { 90, 0, 0 },
 			scale = { 66.85, 39.9, 1 },
@@ -355,7 +355,7 @@ local Table = {
 	Seven = {
 		{
 			name = "table7",
-			url = "https://steamusercontent-a.akamaihd.net/ugc/14142098684572174503/42720D7F2D2CD7EA369A3190F99E57B410627A50",
+			url = "https://steamusercontent-a.akamaihd.net/ugc/14142098684572174503/42720D7F2D2CD7EA369A3190F99E57B410627A50/",
 			position = { 0, 3.046875, 0 },
 			rotation = { 90, 0, 0 },
 			scale = { 66.85, 39.9, 1 },
