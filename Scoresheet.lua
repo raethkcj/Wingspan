@@ -305,5 +305,13 @@ function setNectarCellPoints(playerColor, habitat, points)
 	end
 end
 
-function setHummingbirdPoints(hummingbirdPoints)
+function setHummingbirdPoints(params)
+	local playerColor, points = table.unpack(params)
+	local rowPoints = playerPoints[playerColor]
+	if rowPoints and rowPoints["hbird"] ~= points then
+		rowPoints["hbird"] = points
+		setCellPoints("hbird", playerColor, points)
+		setTotalPoints(playerColor)
+		xmlNeedsUpdate = true
+	end
 end

@@ -296,13 +296,14 @@ function takeContainerObject(container, guid, position)
 end
 
 function cloneHummingbirdTracks()
-	for _, playerMat in pairs(PlayerMat) do
+	for playerColor, playerMat in pairs(PlayerMat) do
 		local rotation = playerMat.getRotation()
 		local scale = playerMat.getScale()
 		local position = playerMat.positionToWorld({ -9.35 / scale[1], 4.96, 1.75 / scale[3] })
 		local hbirdTrack = hbirdTrackSource.clone({ position = position })
 		hbirdTrack.setRotation(rotation)
 		hbirdTrack.removeAttachments()
+		hbirdTrack.setMemo(playerColor)
 		table.insert(hbirdTracks, hbirdTrack)
 	end
 end
